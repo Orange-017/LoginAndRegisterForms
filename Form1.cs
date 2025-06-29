@@ -7,12 +7,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Data.SqlClient;
+using BCrypt.Net;
 
 namespace LoginAndRegisterForms
 {
-    public partial class Form1 : Form
+    public partial class LoginFrm : Form
     {
-        public Form1()
+        public LoginFrm()
         {
             InitializeComponent();
         }
@@ -24,7 +26,50 @@ namespace LoginAndRegisterForms
 
         private void button1_Click(object sender, EventArgs e)
         {
+            string username = txtUsername.Text;
+            string password = txtPassword.Text;
 
+
+            string connectionString = "Data Source=LAPTOP-FT905FTC\\SQLEXPRESS;Initial Catalog=RecordManagement;Integrated Security=True;";
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    conn.Open();
+
+                    string query = "SELECT password_hash FROM TBL_Login WHERE username = @username";
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@username", username);
+
+                        var result = cmd.ExecuteScalar();
+                        if (result != null)
+                        {
+                            string storedHash = result.ToString();
+
+                            if (BCrypt.Net.BCrypt.Verify(password, storedHash))
+                            {
+                                MessageBox.Show("Login Succesful");
+                            }
+                            else
+                            {
+                                MessageBox.Show("Invalid Password");
+
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show("Username not found.");
+                        }
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error: " + ex.Message);
+                }
+            }
         }
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -43,6 +88,11 @@ namespace LoginAndRegisterForms
         {
             ForgotPassForm F3 = new ForgotPassForm();
             F3.Show();
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
