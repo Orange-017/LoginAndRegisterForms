@@ -121,7 +121,31 @@ namespace LoginAndRegisterForms
             }
         }
     }
-}
+}/* SQL 
+  *
+  *CREATE TABLE TBL_Login(
+userID INT IDENTITY(1,1) PRIMARY KEY,
+username varchar(50) NOT NULL UNIQUE,
+password_hash varchar(255) NOT NULL,
+);
+
+INSERT INTO TBL_Login (username, password_hash)
+VALUES ('admin', '$2y$10$8geJ8LgHDFn1nB0Pv4n1peM...');
+
+
+CREATE TABLE TBL_Register ( 
+    UserID INT, 
+    FirstName NVARCHAR(50),
+    LastName NVARCHAR(50),
+    MiddleName NVARCHAR(50),
+    PositionInHOA NVARCHAR(100),
+    CompleteAddress NVARCHAR(255),
+    ContactNumber NVARCHAR(20),
+    EmailAddress NVARCHAR(100),
+    CONSTRAINT FK_Register_Login FOREIGN KEY (UserID) REFERENCES TBL_Login(UserID)
+);
+*/
+
         
     
 
