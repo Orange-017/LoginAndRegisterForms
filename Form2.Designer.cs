@@ -50,6 +50,8 @@
             this.txtUname = new System.Windows.Forms.TextBox();
             this.txtPass = new System.Windows.Forms.TextBox();
             this.txtCPass = new System.Windows.Forms.TextBox();
+            this.txtID = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
@@ -232,11 +234,29 @@
             this.txtCPass.Size = new System.Drawing.Size(172, 22);
             this.txtCPass.TabIndex = 21;
             // 
+            // txtID
+            // 
+            this.txtID.Location = new System.Drawing.Point(635, 51);
+            this.txtID.Name = "txtID";
+            this.txtID.Size = new System.Drawing.Size(112, 22);
+            this.txtID.TabIndex = 22;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(601, 32);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(126, 16);
+            this.label3.TabIndex = 23;
+            this.label3.Text = "admin Authorized ID";
+            // 
             // RegistrationForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.txtID);
             this.Controls.Add(this.txtCPass);
             this.Controls.Add(this.txtPass);
             this.Controls.Add(this.txtUname);
@@ -291,5 +311,7 @@
         private System.Windows.Forms.TextBox txtUname;
         private System.Windows.Forms.TextBox txtPass;
         private System.Windows.Forms.TextBox txtCPass;
+        private System.Windows.Forms.TextBox txtID;
+        private System.Windows.Forms.Label label3;
     }
 }

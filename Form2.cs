@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.SqlClient;
 using BCrypt.Net;
+using System.Drawing.Text;
 
 namespace LoginAndRegisterForms
 {
@@ -25,11 +26,16 @@ namespace LoginAndRegisterForms
 
         }
 
+      
         private void button1_Click(object sender, EventArgs e)
         {
+
+         
+
             string username = txtUname.Text.Trim();
             string pass = txtPass.Text;
             string Confirmpass = txtCPass.Text;
+            string AuthorizedID = txtID.Text;
 
             string firstname = txtFname.Text;
             string lastname = txtLname.Text;
@@ -39,10 +45,20 @@ namespace LoginAndRegisterForms
             string number = txtContact.Text;
             string HOAposition = txtPosition.Text;
 
+
+
+            if(AuthorizedID != "10010")
+            {
+                MessageBox.Show("You need a valid admin ID to register");
+                return;
+            }
             if (pass != Confirmpass) {
                 MessageBox.Show("not match");
                 return;
             }
+
+           
+
             string connectionString = "Data Source=LAPTOP-FT905FTC\\SQLEXPRESS;Initial Catalog=RecordManagement;Integrated Security=True;";
 
             using (SqlConnection conn = new SqlConnection(connectionString))
