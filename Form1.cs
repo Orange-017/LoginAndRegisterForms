@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.SqlClient;
 using BCrypt.Net;
+using System.Text.RegularExpressions;
 
 namespace LoginAndRegisterForms
 {
@@ -29,7 +30,28 @@ namespace LoginAndRegisterForms
             string username = txtUsername.Text;
             string password = txtPassword.Text;
 
+            if (string.IsNullOrEmpty(username) && string.IsNullOrEmpty(password))
+            {
+                MessageBox.Show("Enter what is missing.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); return;
+            }
 
+
+            else if (password.Length < 8)
+            {
+                MessageBox.Show("Password must be at least 8 characters.");
+                return;
+            }
+
+            else if (!Regex.IsMatch(username, @"^[^\s][A-Za-z]+(?:\s[A-Za-z]+)*(?:\s[A-Za-z]+)?$"))
+            {
+                MessageBox.Show("Space is not allowed in the beginning.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else
+            {
+                MessageBox.Show("Invalid.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                txtUsername.Focus();
+            }
             string connectionString = "Data Source=LAPTOP-FT905FTC\\SQLEXPRESS;Initial Catalog=RecordManagement;Integrated Security=True;";
 
             using (SqlConnection conn = new SqlConnection(connectionString))
@@ -51,17 +73,19 @@ namespace LoginAndRegisterForms
                             if (BCrypt.Net.BCrypt.Verify(password, storedHash))
                             {
                                 MessageBox.Show("Login Succesful");
+                                Dashboardfrm F4 = new Dashboardfrm();
+                                F4.Show();
+                                this.Hide();
                             }
+                          
+                            
                             else
                             {
                                 MessageBox.Show("Invalid Password");
 
                             }
                         }
-                        else
-                        {
-                            MessageBox.Show("Username not found.");
-                        }
+                        
                     }
 
                 }

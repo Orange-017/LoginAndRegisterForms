@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.Data.SqlClient;
 using BCrypt.Net;
 using System.Drawing.Text;
+using System.Text.RegularExpressions;
 
 namespace LoginAndRegisterForms
 {
@@ -22,17 +23,22 @@ namespace LoginAndRegisterForms
 
         private void RegistrationForm_Load(object sender, EventArgs e)
         {
+            
 
 
         }
+    
 
-      
         private void button1_Click(object sender, EventArgs e)
         {
 
-         
+            if (!ValidationForRegistration())
+            {
+                return; 
+            }
 
-            string username = txtUname.Text.Trim();
+
+            string username = txtUname.Text;
             string pass = txtPass.Text;
             string Confirmpass = txtCPass.Text;
             string AuthorizedID = txtID.Text;
@@ -44,18 +50,6 @@ namespace LoginAndRegisterForms
             string email = txtEmail.Text;
             string number = txtContact.Text;
             string HOAposition = txtPosition.Text;
-
-
-
-            if(AuthorizedID != "10010")
-            {
-                MessageBox.Show("You need a valid admin ID to register");
-                return;
-            }
-            if (pass != Confirmpass) {
-                MessageBox.Show("not match");
-                return;
-            }
 
            
 
@@ -134,9 +128,87 @@ namespace LoginAndRegisterForms
                     }
                     MessageBox.Show("An unexpected error occurred: " + ex.Message, "Registration Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
+
             }
+
+           
+        }
+        private bool ValidationForRegistration()
+        {
+            string username = txtUname.Text;
+            string pass = txtPass.Text;
+            string Confirmpass = txtCPass.Text;
+            string AuthorizedID = txtID.Text;
+
+            string firstname = txtFname.Text;
+            string lastname = txtLname.Text;
+            string middlename = txtMname.Text;
+            string address = txtAddress.Text;
+            string email = txtEmail.Text;
+            string number = txtContact.Text;
+            string HOAposition = txtPosition.Text;
+
+            string[] inputs = { username, pass, Confirmpass, firstname, lastname, middlename, address, email, number, HOAposition };
+
+            foreach (string input in inputs)
+            {
+                if (!string.IsNullOrEmpty(input) && char.IsWhiteSpace(input[0]))
+                {
+                    MessageBox.Show("Space is not allowed at the beginning of any input.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return false;
+                }
+            }
+
+            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(pass) ||
+                string.IsNullOrWhiteSpace(Confirmpass) || string.IsNullOrWhiteSpace(firstname) ||
+                string.IsNullOrWhiteSpace(lastname) || string.IsNullOrWhiteSpace(address) ||
+                string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(number))
+            {
+                MessageBox.Show("Please fill in all required fields.");
+                return false;
+            }
+
+            else if (AuthorizedID != "10010")
+            {
+                MessageBox.Show("You need a valid admin ID to register.");
+                return false;
+            }
+
+            else if (!Regex.IsMatch(username, @"^[a-zA-Z0-9]+$"))
+            {
+                MessageBox.Show("Username must be alphanumeric.");
+                return false;
+            }
+
+           else if (pass.Length < 8)
+            {
+                MessageBox.Show("Password must be at least 8 characters.");
+                return false;
+            }
+
+            else if (pass != Confirmpass)
+            {
+                MessageBox.Show("Passwords do not match.");
+                return false;
+            }
+
+            else if (!Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+            {
+                MessageBox.Show("Invalid email address.");
+                return false;
+            }
+
+            else if (!Regex.IsMatch(number, @"^\d{11}$"))
+            {
+                MessageBox.Show("Contact number must be 11 digits");
+                return false;
+            }
+
+            return true;
         }
     }
+    
+
 }/* SQL 
   *
   *CREATE TABLE TBL_Login(
