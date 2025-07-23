@@ -15,6 +15,8 @@ namespace LoginAndRegisterForms
 {
     public partial class LoginFrm : Form
     {
+        private const string ConnectionString = "Data Source=LAPTOP-FT905FTC\\SQLEXPRESS;Initial Catalog=RecordManagement;Integrated Security=True;";
+        private const int MinimumPasswordLength = 8;
         public LoginFrm()
         {
             InitializeComponent();
@@ -30,70 +32,92 @@ namespace LoginAndRegisterForms
             string username = txtUsername.Text;
             string password = txtPassword.Text;
 
-            if (string.IsNullOrEmpty(username) && string.IsNullOrEmpty(password))
+            if (!ValidateInputs(username, password))
             {
-                MessageBox.Show("Enter what is missing.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); return;
-            }
-
-
-            else if (password.Length < 8)
-            {
-                MessageBox.Show("Password must be at least 8 characters.");
                 return;
             }
 
-            else if (!Regex.IsMatch(username, @"^[^\s][A-Za-z]+(?:\s[A-Za-z]+)*(?:\s[A-Za-z]+)?$"))
+            try
             {
-                MessageBox.Show("Space is not allowed in the beginning.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            else
-            {
-                MessageBox.Show("Invalid.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-                txtUsername.Focus();
-            }
-            string connectionString = "Data Source=LAPTOP-FT905FTC\\SQLEXPRESS;Initial Catalog=RecordManagement;Integrated Security=True;";
-
-            using (SqlConnection conn = new SqlConnection(connectionString))
-            {
-                try
+                if (AuthenticateUser(username, password))
                 {
-                    conn.Open();
+                    ShowDashboard();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}", "Login Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        private bool ValidateInputs(string username, string password)
+        {
+      
+            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+            {
+                MessageBox.Show("Please enter both username and password.", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
 
-                    string query = "SELECT password_hash FROM TBL_Login WHERE username = @username";
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
+        
+            if (!Regex.IsMatch(username, @"^[^\s][A-Za-z]+(?:\s[A-Za-z]+)*(?:\s[A-Za-z]+)?$"))
+            {
+                MessageBox.Show("Username cannot start with a space and must contain only letters.",
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                txtUsername.Focus();
+                return false;
+            }
+
+        
+            if (password.Length < MinimumPasswordLength)
+            {
+                MessageBox.Show($"Password must be at least {MinimumPasswordLength} characters.",
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                txtPassword.Focus();
+                return false;
+            }
+
+            return true;
+        }
+
+
+        private bool AuthenticateUser(string username, string password)
+        {
+            using (SqlConnection conn = new SqlConnection(ConnectionString))
+            {
+                conn.Open();
+
+                string query = "SELECT password_hash FROM TBL_Login WHERE username = @username";
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@username", username);
+
+                    var result = cmd.ExecuteScalar();
+                    if (result == null)
                     {
-                        cmd.Parameters.AddWithValue("@username", username);
-
-                        var result = cmd.ExecuteScalar();
-                        if (result != null)
-                        {
-                            string storedHash = result.ToString();
-
-                            if (BCrypt.Net.BCrypt.Verify(password, storedHash))
-                            {
-                                MessageBox.Show("Login Succesful");
-                                Dashboardfrm F4 = new Dashboardfrm();
-                                F4.Show();
-                                this.Hide();
-                            }
-                          
-                            
-                            else
-                            {
-                                MessageBox.Show("Invalid Password");
-
-                            }
-                        }
-                        
+                        MessageBox.Show("Username not found.", "Login Failed",
+                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return false;
                     }
 
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error: " + ex.Message);
+                    string storedHash = result.ToString();
+                    if (!BCrypt.Net.BCrypt.Verify(password, storedHash))
+                    {
+                        MessageBox.Show("Invalid password.", "Login Failed",
+                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return false;
+                    }
+
+                    return true;
                 }
             }
+        }
+        private void ShowDashboard()
+        {
+            MessageBox.Show("Login Successful", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            Dashboardfrm dashboard = new Dashboardfrm();
+            dashboard.Show();
+            this.Hide();
         }
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

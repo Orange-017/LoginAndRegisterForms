@@ -16,6 +16,11 @@ namespace LoginAndRegisterForms
 {
     public partial class RegistrationForm : Form
     {
+        private const string ConnectionString = "Data Source=LAPTOP-FT905FTC\\SQLEXPRESS;Initial Catalog=RecordManagement;Integrated Security=True;";
+        private const string AdminId = "10010";
+        private const int MinimumPasswordLength = 8;
+        private const int ContactNumberLength = 11;
+
         public RegistrationForm()
         {
             InitializeComponent();
@@ -23,191 +28,204 @@ namespace LoginAndRegisterForms
 
         private void RegistrationForm_Load(object sender, EventArgs e)
         {
-            
-
-
         }
-    
+
 
         private void button1_Click(object sender, EventArgs e)
         {
 
-            if (!ValidationForRegistration())
+            if (!ValidateRegistrationInputs())
             {
-                return; 
+                return;
             }
 
-
-            string username = txtUname.Text;
-            string pass = txtPass.Text;
-            string Confirmpass = txtCPass.Text;
-            string AuthorizedID = txtID.Text;
-
-            string firstname = txtFname.Text;
-            string lastname = txtLname.Text;
-            string middlename = txtMname.Text;
-            string address = txtAddress.Text;
-            string email = txtEmail.Text;
-            string number = txtContact.Text;
-            string HOAposition = txtPosition.Text;
-
-           
-
-            string connectionString = "Data Source=LAPTOP-FT905FTC\\SQLEXPRESS;Initial Catalog=RecordManagement;Integrated Security=True;";
-
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            try
             {
-                SqlTransaction transaction = null; 
-              try  {
-                    conn.Open();
-                    transaction = conn.BeginTransaction(); 
-
-                   
-                    string checkUserQuery = "SELECT COUNT(1) FROM TBL_Login WHERE username = @username";
-                    using (SqlCommand checkCmd = new SqlCommand(checkUserQuery, conn, transaction))
-                    {
-                        checkCmd.Parameters.AddWithValue("@username", username);
-                        int userCount = (int)checkCmd.ExecuteScalar();
-                        if (userCount > 0)
-                        {
-                            MessageBox.Show("Username already taken. Please choose a different one.", "Registration Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                            transaction.Rollback(); 
-                            return;
-                        }
-                    }
-
-                   
-                    string hashedPassword = BCrypt.Net.BCrypt.HashPassword(pass);
-
-                  
-                    string insertLoginQuery = "INSERT INTO TBL_Login (username, password_hash) VALUES (@username, @password_hash); SELECT SCOPE_IDENTITY();";
-                    using (SqlCommand loginCmd = new SqlCommand(insertLoginQuery, conn, transaction))
-                    {
-                        loginCmd.Parameters.AddWithValue("@username", username);
-                        loginCmd.Parameters.AddWithValue("@password_hash", hashedPassword);
-
-                      
-                        int newUserId = Convert.ToInt32(loginCmd.ExecuteScalar());
-                        string insertRegisterQuery = "INSERT INTO TBL_Register (UserID, FirstName, LastName, MiddleName, PositionInHOA, CompleteAddress, ContactNumber, EmailAddress) " +
-                                                     "VALUES (@userID, @firstName, @lastName, @middleName, @hoaPosition, @address, @contactNumber, @email)";
-
-                        using (SqlCommand registerCmd = new SqlCommand(insertRegisterQuery, conn, transaction))
-                        {
-                            registerCmd.Parameters.AddWithValue("@userID", newUserId);
-                            registerCmd.Parameters.AddWithValue("@firstName", firstname);
-                            registerCmd.Parameters.AddWithValue("@lastName", lastname);
-                            registerCmd.Parameters.AddWithValue("@middleName", middlename);
-                            registerCmd.Parameters.AddWithValue("@hoaPosition", HOAposition); 
-                            registerCmd.Parameters.AddWithValue("@address", address);
-                            registerCmd.Parameters.AddWithValue("@contactNumber", number); 
-                            registerCmd.Parameters.AddWithValue("@email", email);
-
-                            registerCmd.ExecuteNonQuery();
-
-                            transaction.Commit(); 
-                            MessageBox.Show("Registration Successful! You can now log in.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            this.Close(); 
-                        }
-                    }
-                }             
-                catch (SqlException ex)
-                {
-                    
-                    if (transaction != null)
-                    {
-                        transaction.Rollback();
-                    }
-                    MessageBox.Show("A database error occurred during registration: " + ex.Message, "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                catch (Exception ex)
-                {
-                    
-                    if (transaction != null)
-                    {
-                        transaction.Rollback();
-                    }
-                    MessageBox.Show("An unexpected error occurred: " + ex.Message, "Registration Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-
+                RegisterNewUser();
+                MessageBox.Show("Registration Successful! You can now log in.", "Success",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                this.Close();
             }
-
-           
+            catch (SqlException ex)
+            {
+                MessageBox.Show($"A database error occurred: {ex.Message}", "Database Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An unexpected error occurred: {ex.Message}", "Registration Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
-        private bool ValidationForRegistration()
+
+        private bool ValidateRegistrationInputs()
         {
-            string username = txtUname.Text;
-            string pass = txtPass.Text;
-            string Confirmpass = txtCPass.Text;
-            string AuthorizedID = txtID.Text;
-
-            string firstname = txtFname.Text;
-            string lastname = txtLname.Text;
-            string middlename = txtMname.Text;
-            string address = txtAddress.Text;
-            string email = txtEmail.Text;
-            string number = txtContact.Text;
-            string HOAposition = txtPosition.Text;
-
-            string[] inputs = { username, pass, Confirmpass, firstname, lastname, middlename, address, email, number, HOAposition };
-
-            foreach (string input in inputs)
+            
+            if (string.IsNullOrWhiteSpace(txtUname.Text) ||
+                string.IsNullOrWhiteSpace(txtPass.Text) ||
+                string.IsNullOrWhiteSpace(txtCPass.Text) ||
+                string.IsNullOrWhiteSpace(txtFname.Text) ||
+                string.IsNullOrWhiteSpace(txtLname.Text) ||
+                string.IsNullOrWhiteSpace(txtAddress.Text) ||
+                string.IsNullOrWhiteSpace(txtEmail.Text) ||
+                string.IsNullOrWhiteSpace(txtContact.Text))
             {
-                if (!string.IsNullOrEmpty(input) && char.IsWhiteSpace(input[0]))
-                {
-                    MessageBox.Show("Space is not allowed at the beginning of any input.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return false;
-                }
-            }
-
-            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(pass) ||
-                string.IsNullOrWhiteSpace(Confirmpass) || string.IsNullOrWhiteSpace(firstname) ||
-                string.IsNullOrWhiteSpace(lastname) || string.IsNullOrWhiteSpace(address) ||
-                string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(number))
-            {
-                MessageBox.Show("Please fill in all required fields.");
+                MessageBox.Show("Please fill in all required fields.", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
 
-            else if (AuthorizedID != "10010")
+         
+            if (txtID.Text != AdminId)
             {
-                MessageBox.Show("You need a valid admin ID to register.");
+                MessageBox.Show("You need a valid admin ID to register.", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
 
-            else if (!Regex.IsMatch(username, @"^[a-zA-Z0-9]+$"))
+            
+            if (HasLeadingWhitespace(txtUname.Text, txtPass.Text, txtCPass.Text, txtFname.Text,
+                txtLname.Text, txtMname.Text, txtAddress.Text, txtEmail.Text, txtContact.Text, txtPosition.Text))
             {
-                MessageBox.Show("Username must be alphanumeric.");
+                MessageBox.Show("Space is not allowed at the beginning of any input.", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
 
-           else if (pass.Length < 8)
+           
+            if (!Regex.IsMatch(txtUname.Text, @"^[a-zA-Z0-9]+$"))
             {
-                MessageBox.Show("Password must be at least 8 characters.");
+                MessageBox.Show("Username must be alphanumeric with no spaces.", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
 
-            else if (pass != Confirmpass)
+          
+            if (txtPass.Text.Length < MinimumPasswordLength)
             {
-                MessageBox.Show("Passwords do not match.");
+                MessageBox.Show($"Password must be at least {MinimumPasswordLength} characters.", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
 
-            else if (!Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+            if (txtPass.Text != txtCPass.Text)
             {
-                MessageBox.Show("Invalid email address.");
+                MessageBox.Show("Passwords do not match.", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
 
-            else if (!Regex.IsMatch(number, @"^\d{11}$"))
+          
+            if (!Regex.IsMatch(txtEmail.Text, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
             {
-                MessageBox.Show("Contact number must be 11 digits");
+                MessageBox.Show("Invalid email address format.", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+          
+            if (!Regex.IsMatch(txtContact.Text, @"^\d{" + ContactNumberLength + "}$"))
+            {
+                MessageBox.Show($"Contact number must be exactly {ContactNumberLength} digits.", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
 
             return true;
         }
+        private bool HasLeadingWhitespace(params string[] inputs)
+        {
+            foreach (string input in inputs)
+            {
+                if (!string.IsNullOrEmpty(input) && char.IsWhiteSpace(input[0]))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private void RegisterNewUser()
+        {
+            using (SqlConnection conn = new SqlConnection(ConnectionString))
+            {
+                conn.Open();
+                using (SqlTransaction transaction = conn.BeginTransaction())
+                {
+                    try
+                    {
+                        
+                        if (UsernameExists(conn, transaction, txtUname.Text))
+                        {
+                            MessageBox.Show("Username already taken. Please choose a different one.",
+                                "Registration Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return;
+                        }
+
+                        int newUserId = InsertLoginCredentials(conn, transaction, txtUname.Text, txtPass.Text);
+
+                       
+                        InsertUserDetails(conn, transaction, newUserId, txtFname.Text, txtLname.Text,
+                            txtMname.Text, txtPosition.Text, txtAddress.Text, txtContact.Text, txtEmail.Text);
+
+                        transaction.Commit();
+                    }
+                    catch
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
+                }
+            }
+        }
+        private bool UsernameExists(SqlConnection conn, SqlTransaction transaction, string username)
+        {
+            string query = "SELECT COUNT(1) FROM TBL_Login WHERE username = @username";
+            using (SqlCommand cmd = new SqlCommand(query, conn, transaction))
+            {
+                cmd.Parameters.AddWithValue("@username", username);
+                return (int)cmd.ExecuteScalar() > 0;
+            }
+        }
+
+        private int InsertLoginCredentials(SqlConnection conn, SqlTransaction transaction, string username, string password)
+        {
+            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(password);
+            string query = "INSERT INTO TBL_Login (username, password_hash) VALUES (@username, @password_hash); SELECT SCOPE_IDENTITY();";
+
+            using (SqlCommand cmd = new SqlCommand(query, conn, transaction))
+            {
+                cmd.Parameters.AddWithValue("@username", username);
+                cmd.Parameters.AddWithValue("@password_hash", hashedPassword);
+                return Convert.ToInt32(cmd.ExecuteScalar());
+            }
+        }
+
+        private void InsertUserDetails(SqlConnection conn, SqlTransaction transaction, int userId,
+            string firstName, string lastName, string middleName, string position,
+            string address, string contactNumber, string email)
+        {
+            string query = @"INSERT INTO TBL_Register 
+                            (UserID, FirstName, LastName, MiddleName, PositionInHOA, CompleteAddress, ContactNumber, EmailAddress) 
+                            VALUES 
+                            (@userID, @firstName, @lastName, @middleName, @hoaPosition, @address, @contactNumber, @email)";
+
+            using (SqlCommand cmd = new SqlCommand(query, conn, transaction))
+            {
+                cmd.Parameters.AddWithValue("@userID", userId);
+                cmd.Parameters.AddWithValue("@firstName", firstName);
+                cmd.Parameters.AddWithValue("@lastName", lastName);
+                cmd.Parameters.AddWithValue("@middleName", middleName ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@hoaPosition", position);
+                cmd.Parameters.AddWithValue("@address", address);
+                cmd.Parameters.AddWithValue("@contactNumber", contactNumber);
+                cmd.Parameters.AddWithValue("@email", email);
+
+                cmd.ExecuteNonQuery();
+            }
+        }
     }
-    
+       
 
 }/* SQL 
   *
