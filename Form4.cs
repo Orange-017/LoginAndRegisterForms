@@ -50,5 +50,11 @@ namespace LoginAndRegisterForms
             MonthlyDues.Show();
 
         }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            VisitorLogFrm VisitorForm = new VisitorLogFrm();
+            VisitorForm.Show();
+        }
     }
 }

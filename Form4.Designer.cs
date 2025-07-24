@@ -36,9 +36,9 @@
             this.button6 = new System.Windows.Forms.Button();
             this.MonthlyDues = new System.Windows.Forms.Button();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -80,12 +80,13 @@
             // button4
             // 
             this.button4.BackColor = System.Drawing.Color.Transparent;
-            this.button4.Location = new System.Drawing.Point(58, 346);
+            this.button4.Location = new System.Drawing.Point(46, 348);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(113, 28);
             this.button4.TabIndex = 4;
             this.button4.Text = "Visitor Logs";
             this.button4.UseVisualStyleBackColor = false;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
             // button5
             // 
@@ -147,13 +148,14 @@
             this.splitContainer1.SplitterDistance = 249;
             this.splitContainer1.TabIndex = 8;
             // 
-            // pictureBox1
+            // label3
             // 
-            this.pictureBox1.Location = new System.Drawing.Point(58, 24);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(154, 103);
-            this.pictureBox1.TabIndex = 8;
-            this.pictureBox1.TabStop = false;
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(106, 155);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(44, 16);
+            this.label3.TabIndex = 10;
+            this.label3.Text = "label3";
             // 
             // label2
             // 
@@ -164,14 +166,13 @@
             this.label2.TabIndex = 9;
             this.label2.Text = "label2";
             // 
-            // label3
+            // pictureBox1
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(106, 155);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(44, 16);
-            this.label3.TabIndex = 10;
-            this.label3.Text = "label3";
+            this.pictureBox1.Location = new System.Drawing.Point(58, 24);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(154, 103);
+            this.pictureBox1.TabIndex = 8;
+            this.pictureBox1.TabStop = false;
             // 
             // label1
             // 

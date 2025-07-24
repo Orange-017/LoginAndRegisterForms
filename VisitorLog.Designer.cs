@@ -220,6 +220,7 @@
             this.btnRecordExit.TabIndex = 4;
             this.btnRecordExit.Text = "Record Exit";
             this.btnRecordExit.UseVisualStyleBackColor = true;
+            this.btnRecordExit.Click += new System.EventHandler(this.btnRecordExit_Click);
             // 
             // textBox1
             // 

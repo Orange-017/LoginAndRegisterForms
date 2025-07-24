@@ -28,11 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.textBox3 = new System.Windows.Forms.TextBox();
-            this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
-            this.dateTimePicker2 = new System.Windows.Forms.DateTimePicker();
+            this.txtName = new System.Windows.Forms.TextBox();
+            this.txtContactNumber = new System.Windows.Forms.TextBox();
+            this.txtPurpose = new System.Windows.Forms.TextBox();
+            this.DTPtime = new System.Windows.Forms.DateTimePicker();
+            this.DTPdate = new System.Windows.Forms.DateTimePicker();
             this.Savebtn = new System.Windows.Forms.Button();
             this.Cancelbtn = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
@@ -42,40 +42,40 @@
             this.label5 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
-            // textBox1
+            // txtName
             // 
-            this.textBox1.Location = new System.Drawing.Point(41, 77);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(253, 22);
-            this.textBox1.TabIndex = 0;
+            this.txtName.Location = new System.Drawing.Point(41, 77);
+            this.txtName.Name = "txtName";
+            this.txtName.Size = new System.Drawing.Size(253, 22);
+            this.txtName.TabIndex = 0;
             // 
-            // textBox2
+            // txtContactNumber
             // 
-            this.textBox2.Location = new System.Drawing.Point(41, 148);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(241, 22);
-            this.textBox2.TabIndex = 1;
+            this.txtContactNumber.Location = new System.Drawing.Point(41, 148);
+            this.txtContactNumber.Name = "txtContactNumber";
+            this.txtContactNumber.Size = new System.Drawing.Size(241, 22);
+            this.txtContactNumber.TabIndex = 1;
             // 
-            // textBox3
+            // txtPurpose
             // 
-            this.textBox3.Location = new System.Drawing.Point(41, 246);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(241, 22);
-            this.textBox3.TabIndex = 2;
+            this.txtPurpose.Location = new System.Drawing.Point(41, 246);
+            this.txtPurpose.Name = "txtPurpose";
+            this.txtPurpose.Size = new System.Drawing.Size(241, 22);
+            this.txtPurpose.TabIndex = 2;
             // 
-            // dateTimePicker1
+            // DTPtime
             // 
-            this.dateTimePicker1.Location = new System.Drawing.Point(71, 437);
-            this.dateTimePicker1.Name = "dateTimePicker1";
-            this.dateTimePicker1.Size = new System.Drawing.Size(252, 22);
-            this.dateTimePicker1.TabIndex = 3;
+            this.DTPtime.Location = new System.Drawing.Point(71, 437);
+            this.DTPtime.Name = "DTPtime";
+            this.DTPtime.Size = new System.Drawing.Size(252, 22);
+            this.DTPtime.TabIndex = 3;
             // 
-            // dateTimePicker2
+            // DTPdate
             // 
-            this.dateTimePicker2.Location = new System.Drawing.Point(86, 336);
-            this.dateTimePicker2.Name = "dateTimePicker2";
-            this.dateTimePicker2.Size = new System.Drawing.Size(252, 22);
-            this.dateTimePicker2.TabIndex = 4;
+            this.DTPdate.Location = new System.Drawing.Point(86, 336);
+            this.DTPdate.Name = "DTPdate";
+            this.DTPdate.Size = new System.Drawing.Size(252, 22);
+            this.DTPdate.TabIndex = 4;
             // 
             // Savebtn
             // 
@@ -153,11 +153,11 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.Cancelbtn);
             this.Controls.Add(this.Savebtn);
-            this.Controls.Add(this.dateTimePicker2);
-            this.Controls.Add(this.dateTimePicker1);
-            this.Controls.Add(this.textBox3);
-            this.Controls.Add(this.textBox2);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.DTPdate);
+            this.Controls.Add(this.DTPtime);
+            this.Controls.Add(this.txtPurpose);
+            this.Controls.Add(this.txtContactNumber);
+            this.Controls.Add(this.txtName);
             this.Name = "AddVisitor";
             this.Text = "AddVisitor";
             this.Load += new System.EventHandler(this.AddVisitor_Load);
@@ -168,11 +168,11 @@
 
         #endregion
 
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.TextBox textBox3;
-        private System.Windows.Forms.DateTimePicker dateTimePicker1;
-        private System.Windows.Forms.DateTimePicker dateTimePicker2;
+        private System.Windows.Forms.TextBox txtName;
+        private System.Windows.Forms.TextBox txtContactNumber;
+        private System.Windows.Forms.TextBox txtPurpose;
+        private System.Windows.Forms.DateTimePicker DTPtime;
+        private System.Windows.Forms.DateTimePicker DTPdate;
         private System.Windows.Forms.Button Savebtn;
         private System.Windows.Forms.Button Cancelbtn;
         private System.Windows.Forms.Label label1;
